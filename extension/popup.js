@@ -1,4 +1,4 @@
-const BACKEND = "http://localhost:8080";
+const BACKEND = "http://127.0.0.1:8080";
 
 // Show current URL
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
