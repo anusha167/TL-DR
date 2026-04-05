@@ -6,8 +6,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
   document.getElementById("yes-btn").addEventListener("click", () => {
     const yesBtn = document.getElementById("yes-btn");
-    
-    // Immediately show tick
     yesBtn.textContent = "✓";
     yesBtn.disabled = true;
     yesBtn.style.background = "#22c55e";
@@ -17,20 +15,16 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     fetch(`${BACKEND}/save-url`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url })
+      body: JSON.stringify({ url }),
+      keepalive: true
     })
-    .then(() => {
-      // Close popup after a beat
-      setTimeout(() => window.close(), 800);
-    })
+    .then(() => setTimeout(() => window.close(), 800))
     .catch(err => {
-      console.error("Failed to save URL:", err);
+      console.error("Failed:", err);
       yesBtn.textContent = "✕";
       yesBtn.style.background = "#ef4444";
     });
   });
 
-  document.getElementById("no-btn").addEventListener("click", () => {
-    window.close();
-  });
+  document.getElementById("no-btn").addEventListener("click", () => window.close());
 });

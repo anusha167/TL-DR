@@ -1,28 +1,20 @@
 import os
-from openai import OpenAI
+from gtts import gTTS
 from dotenv import load_dotenv
 
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
 AUDIO_DIR = os.path.join(os.path.dirname(__file__), "audio")
 
 def generate_audio(summary, url):
-    """Converts summary text to audio using OpenAI TTS"""
+    """Converts summary text to audio using gTTS (free, no API key needed)"""
     
-    # Create a unique filename from the URL
-    filename = abs(hash(url)).__str__() + ".mp3"
+    filename = str(abs(hash(url))) + ".mp3"
     filepath = os.path.join(AUDIO_DIR, filename)
     
     try:
-        response = client.audio.speech.create(
-            model="tts-1",
-            voice="nova",       # nova is a warm, natural voice
-            input=summary
-        )
-        
-        response.stream_to_file(filepath)
+        tts = gTTS(text=summary, lang='en', slow=False)
+        tts.save(filepath)
         print(f"Audio saved: {filename}")
         return filename
     
