@@ -1,43 +1,36 @@
 const BACKEND = "http://127.0.0.1:8080";
 
-// Show current URL
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   const url = tabs[0].url;
   document.getElementById("url-display").textContent = url;
 
-  // Yes button
   document.getElementById("yes-btn").addEventListener("click", () => {
+    const yesBtn = document.getElementById("yes-btn");
+    
+    // Immediately show tick
+    yesBtn.textContent = "✓";
+    yesBtn.disabled = true;
+    yesBtn.style.background = "#22c55e";
+    yesBtn.style.color = "white";
+    yesBtn.style.fontSize = "20px";
+
     fetch(`${BACKEND}/save-url`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url })
     })
     .then(() => {
-      document.getElementById("main-view").style.display = "none";
-      document.getElementById("success-view").style.display = "block";
+      // Close popup after a beat
+      setTimeout(() => window.close(), 800);
     })
-    .catch(err => console.error("Failed to save URL:", err));
+    .catch(err => {
+      console.error("Failed to save URL:", err);
+      yesBtn.textContent = "✕";
+      yesBtn.style.background = "#ef4444";
+    });
   });
 
-  // No button
   document.getElementById("no-btn").addEventListener("click", () => {
     window.close();
   });
-});
-
-// Email registration
-document.getElementById("email-btn").addEventListener("click", () => {
-  const email = document.getElementById("email-input").value;
-  if (!email) return;
-
-  fetch(`${BACKEND}/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email })
-  })
-  .then(() => {
-    document.getElementById("email-btn").textContent = "✓";
-    document.getElementById("email-input").placeholder = "Saved!";
-  })
-  .catch(err => console.error("Failed to register email:", err));
 });
