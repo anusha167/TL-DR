@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TL;DR Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="logo">TL;DR ✦</div>
+    <div class="tagline">because you saved it<br>but never read it.</div>
+    <nav>
+      <a class="nav-link active" href="#">Today's Digest</a>
+      <a class="nav-link" href="#">All Articles</a>
+    </nav>
+    <div class="sidebar-footer">
+      <input type="email" id="sidebar-email" placeholder="your@email.com">
+      <button id="sidebar-email-btn">Get Notified</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="header">
+      <div>
+        <h1 class="heading">Today's Digest</h1>
+        <p class="subheading" id="article-count">Loading articles...</p>
+      </div>
+      <div class="toggle-group">
+        <button class="toggle active" data-mode="both">Both</button>
+        <button class="toggle" data-mode="text">Text</button>
+        <button class="toggle" data-mode="audio">Audio</button>
+      </div>
+    </div>
+
+    <div class="cards" id="cards-container">
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-icon">✦</div>
+        <p>Nothing saved yet.</p>
+        <p class="empty-sub">Install the extension and save your first article!</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Audio player bar -->
+  <div class="audio-bar" id="audio-bar" style="display:none">
+    <div class="audio-info">
+      <span class="audio-title" id="audio-title">No article selected</span>
+    </div>
+    <div class="audio-controls">
+      <button id="rewind-btn">⏪ 15s</button>
+      <button id="play-btn">▶</button>
+      <button id="forward-btn">15s ⏩</button>
+    </div>
+    <div class="audio-progress">
+      <span id="current-time">0:00</span>
+      <input type="range" id="progress-bar" value="0" min="0" max="100">
+      <span id="total-time">0:00</span>
+    </div>
+  </div>
+
+  <audio id="audio-player"></audio>
+  <script src="app.js"></script>
+</body>
+</html>

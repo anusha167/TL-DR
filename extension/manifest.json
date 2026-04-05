@@ -1,0 +1,11 @@
+{
+    "manifest_version": 3,
+    "name": "TL;DR",
+    "version": "1.0",
+    "description": "Save any article and get an AI summary delivered to your dashboard.",
+    "permissions": ["activeTab", "scripting"],
+    "action": {
+      "default_popup": "popup.html",
+      "default_title": "TL;DR"
+    }
+  }

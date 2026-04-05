@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 300px;
+      background: #0f0f0f;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      padding: 24px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: #7C3AED;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .tagline {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    .question {
+      font-size: 14px;
+      color: #cccccc;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .url-preview {
+      font-size: 11px;
+      color: #555;
+      margin-bottom: 20px;
+      word-break: break-all;
+      background: #1a1a1a;
+      padding: 8px;
+      border-radius: 6px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-yes {
+      flex: 1;
+      background: #7C3AED;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-yes:hover { background: #6D28D9; }
+
+    .btn-no {
+      flex: 1;
+      background: #1a1a1a;
+      color: #666;
+      border: 1px solid #333;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .btn-no:hover { background: #222; }
+
+    .success {
+      display: none;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .success-icon { font-size: 32px; margin-bottom: 8px; }
+
+    .success-text {
+      font-size: 14px;
+      color: #7C3AED;
+      font-weight: 600;
+    }
+
+    .success-sub {
+      font-size: 12px;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    .dashboard-link {
+      display: block;
+      margin-top: 16px;
+      text-align: center;
+      color: #7C3AED;
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .email-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #222;
+    }
+
+    .email-label {
+      font-size: 11px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .email-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .email-input {
+      flex: 1;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: white;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .email-btn {
+      background: #1a1a1a;
+      border: 1px solid #7C3AED;
+      color: #7C3AED;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">TL;DR ✦</div>
+  <div class="tagline">because you saved it but never read it.</div>
+
+  <div id="main-view">
+    <div class="question">Want this article summarized?</div>
+    <div class="url-preview" id="url-display">Loading...</div>
+    <div class="buttons">
+      <button class="btn-yes" id="yes-btn">Yes!</button>
+      <button class="btn-no" id="no-btn">No</button>
+    </div>
+
+    <div class="email-section">
+      <div class="email-label">Get notified when your summary is ready:</div>
+      <div class="email-row">
+        <input class="email-input" type="email" id="email-input" placeholder="your@email.com">
+        <button class="email-btn" id="email-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="success" id="success-view">
+    <div class="success-icon">✦</div>
+    <div class="success-text">Saved! We're on it.</div>
+    <div class="success-sub">Your summary will be ready shortly.</div>
+    <a class="dashboard-link" href="http://localhost:3000" target="_blank">
+      View Dashboard →
+    </a>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
