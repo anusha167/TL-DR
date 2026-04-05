@@ -171,6 +171,48 @@
     .empty-title { font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 8px; }
     .empty-sub { font-size: 14px; line-height: 1.6; max-width: 340px; margin: 0 auto; }
 
+    /* Section header */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      border: 1px solid #ede9fe;
+      border-radius: 14px;
+      padding: 14px 20px;
+      margin-bottom: 16px;
+    }
+
+    .section-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .section-date {
+      font-size: 12px;
+      color: #9ca3af;
+      padding-left: 8px;
+      border-left: 1px solid #e5e7eb;
+      margin-left: 4px;
+    }
+
+    .section-badge {
+      font-size: 12px;
+      font-weight: 500;
+      background: #faf5ff;
+      color: #7c3aed;
+      border: 1px solid #ddd6fe;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
     /* Cards */
     .cards-container { display: flex; flex-direction: column; gap: 18px; }
 
@@ -385,6 +427,16 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #ddd6fe; border-radius: 99px; }
 
+    /* Date row */
+    .date-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
     /* Stats */
     .stats-grid {
       display: grid;
@@ -442,7 +494,7 @@
   <aside class="sidebar">
     <div class="sidebar-top">
       <div class="logo">TL;DR ✦</div>
-      <p class="tagline">for every article you starred and forgot.</p>
+      <p class="tagline">The whole story, half the time</p>
     </div>
 
     <div class="sidebar-section">
@@ -470,7 +522,11 @@
   <!-- Main -->
   <main class="main">
     <div class="main-header">
-      <h1 class="main-title">Today's TL;DR</h1>
+      <div class="date-row">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span id="today-date"></span>
+      </div>
+      <h1 class="main-title" id="greeting"></h1>
       <p class="main-sub" id="article-count">Loading...</p>
     </div>
 
@@ -516,6 +572,16 @@
           <svg width="20" height="20" fill="none" stroke="#ea580c" stroke-width="2" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
         </div>
       </div>
+    </div>
+
+    <!-- Article section header -->
+    <div class="section-header">
+      <div class="section-header-left">
+        <svg width="16" height="16" fill="none" stroke="#9333ea" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="section-title">Today's TL;DR</span>
+        <span class="section-date" id="section-date"></span>
+      </div>
+      <span class="section-badge" id="section-count"></span>
     </div>
 
     <div id="empty-state" class="empty-state" style="display:none">
@@ -566,6 +632,33 @@
 
 <script src="app.js"></script>
 <script>
+  // Date & greeting — updates every minute
+  function setDateAndGreeting() {
+    const now = new Date();
+    const h = now.getHours();
+
+    document.getElementById("today-date").textContent = now.toLocaleDateString("en-US", {
+      weekday: "long", year: "numeric", month: "long", day: "numeric"
+    });
+
+    document.getElementById("greeting").textContent =
+      h >= 5  && h < 12 ? "Good morning! ☀️" :
+      h >= 12 && h < 17 ? "Good afternoon! ☀️" :
+      h >= 17 && h < 21 ? "Good evening! 🌆" :
+                          "Good night! 🌙";
+
+    // Also update the section header date
+    const sectionDate = document.getElementById("section-date");
+    if (sectionDate) {
+      sectionDate.textContent = now.toLocaleDateString("en-US", {
+        weekday: "short", month: "short", day: "numeric"
+      });
+    }
+  }
+
+  setDateAndGreeting();
+  setInterval(setDateAndGreeting, 60000); // re-run every minute
+
   // Stats — runs independently from app.js, no changes to original JS needed
   async function loadStats() {
     try {
@@ -590,6 +683,9 @@
       document.getElementById("stat-pct").textContent = `${pct}% complete`;
       document.getElementById("stat-time").textContent = timeStr || "0m";
       document.getElementById("stat-audio").textContent = withAudio;
+
+      const sec = document.getElementById("section-count");
+      if (sec) sec.textContent = `${summarized} summar${summarized === 1 ? "y" : "ies"} ready`;
     } catch (e) {
       // silently fail — stats are non-critical
     }
