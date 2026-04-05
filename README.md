@@ -5,7 +5,7 @@
 
 TL;DR is a Chrome extension + AI pipeline that automatically summarizes any article you save — and reads it back to you like a podcast. Save it once. Get the summary. Listen on the go.
 
-Built at **DiamondHacks 2025**, powered by **Browser Use**.
+Built at **DiamondHacks 2026**, powered by **Browser Use**.
 
 ---
 
@@ -43,6 +43,7 @@ Works on articles, PDFs, research papers, news sites — anything.
 - Python 3.11+
 - Conda
 - Google API Key (Gemini)
+- OpenAI API Key
 - Chrome browser
 
 ### 1. Clone the repo
@@ -66,6 +67,7 @@ Create a `.env` file in the `backend/` folder:
 
 ```env
 GOOGLE_API_KEY=your_gemini_api_key
+OPENAI_API_KEY=your_openai_api_key
 EMAIL_ADDRESS=your_gmail@gmail.com
 EMAIL_PASSWORD=your_gmail_app_password
 ```
