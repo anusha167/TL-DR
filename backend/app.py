@@ -7,7 +7,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    return response
+
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "tldr.db")
 AUDIO_DIR = os.path.join(os.path.dirname(__file__), "audio")
@@ -116,7 +124,15 @@ def register():
 def serve_audio(filename):
     return send_from_directory(AUDIO_DIR, filename)
 
+@app.route("/")
+def dashboard():
+    return send_from_directory("../dashboard", "index.html")
+
+@app.route("/<path:filename>")
+def dashboard_files(filename):
+    return send_from_directory("../dashboard", filename)
+
 if __name__ == "__main__":
     init_db()
-    print("TL;DR backend running on http://localhost:5000")
-    app.run(debug=True, port=5000)
+    print("TL;DR backend running on http://localhost:8080")
+    app.run(debug=True, port=8080, host='127.0.0.1')
