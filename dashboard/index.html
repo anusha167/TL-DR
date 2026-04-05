@@ -1,32 +1,452 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TL;DR Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px;
+      background: #f5f3ff;
+      color: #111827;
+      min-height: 100vh;
+    }
+
+    /* Layout */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      min-width: 250px;
+      background: #fff;
+      border-right: 1px solid #ede9fe;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 20px;
+      gap: 28px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-top {
+      border-bottom: 1px solid #f3f0ff;
+      padding-bottom: 20px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #7c3aed;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .tagline {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    .sidebar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .sidebar-hint {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+
+    .sidebar-input {
+      padding: 9px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 13px;
+      width: 100%;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .sidebar-input:focus {
+      border-color: #a78bfa;
+      box-shadow: 0 0 0 3px rgba(167,139,250,0.15);
+    }
+
+    .sidebar-btn {
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.15s;
+    }
+    .sidebar-btn:hover { background: #6d28d9; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: #c4b5fd;
+      line-height: 1.5;
+    }
+
+    /* Toggle group */
+    .toggle-group {
+      display: flex;
+      gap: 4px;
+      background: #f3f0ff;
+      border-radius: 10px;
+      padding: 4px;
+    }
+
+    .toggle {
+      flex: 1;
+      padding: 7px 0;
+      border: none;
+      background: transparent;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: inherit;
+      color: #7c3aed;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .toggle.active {
+      background: #7c3aed;
+      color: #fff;
+    }
+    .toggle:hover:not(.active) { background: #ede9fe; }
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 40px 44px 120px;
+      max-width: 900px;
+    }
+
+    .main-header { margin-bottom: 28px; }
+
+    .main-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .main-sub { font-size: 14px; color: #9ca3af; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 80px 40px;
+      color: #9ca3af;
+    }
+    .empty-icon { font-size: 44px; margin-bottom: 16px; }
+    .empty-title { font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+    .empty-sub { font-size: 14px; line-height: 1.6; max-width: 340px; margin: 0 auto; }
+
+    /* Cards */
+    .cards-container { display: flex; flex-direction: column; gap: 18px; }
+
+    .card {
+      background: #fff;
+      border: 1px solid #ede9fe;
+      border-radius: 16px;
+      padding: 24px 26px;
+      box-shadow: 0 1px 4px rgba(124,58,237,0.05);
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .card:hover {
+      border-color: #c4b5fd;
+      box-shadow: 0 4px 16px rgba(124,58,237,0.1);
+    }
+
+    .card-source {
+      font-size: 11px;
+      font-weight: 600;
+      color: #a78bfa;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .card-summary {
+      font-size: 14px;
+      color: #4b5563;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .play-btn {
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+    .play-btn:hover { background: #6d28d9; }
+
+    .card-link {
+      font-size: 13px;
+      color: #7c3aed;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .card-link:hover { text-decoration: underline; }
+
+    .listen-time {
+      margin-left: auto;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    /* Audio Bar */
+    .audio-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #1e0a4a;
+      color: #fff;
+      height: 72px;
+      padding: 0 28px;
+      align-items: center;
+      gap: 22px;
+      z-index: 200;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.25);
+    }
+
+    .audio-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 180px;
+      max-width: 240px;
+      flex-shrink: 0;
+    }
+
+    .audio-playing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #a78bfa;
+      flex-shrink: 0;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .audio-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e9d5ff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .audio-ctrl {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #c4b5fd;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-family: inherit;
+      transition: color 0.15s, background 0.15s;
+    }
+    .audio-ctrl:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    .ctrl-label { font-size: 9px; font-weight: 600; }
+
+    .audio-play-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      font-size: 16px;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .audio-play-btn:hover { background: #6d28d9; transform: scale(1.05); }
+
+    .audio-progress {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .audio-time {
+      font-size: 11px;
+      color: #a78bfa;
+      font-variant-numeric: tabular-nums;
+      min-width: 32px;
+      flex-shrink: 0;
+    }
+
+    .progress-bar {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.15);
+      outline: none;
+      cursor: pointer;
+    }
+    .progress-bar::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #9333ea;
+      cursor: pointer;
+    }
+    .progress-bar::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #9333ea;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ddd6fe; border-radius: 99px; }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid #ede9fe;
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      box-shadow: 0 1px 3px rgba(124,58,237,0.05);
+    }
+
+    .stat-label { font-size: 12px; color: #9ca3af; margin-bottom: 6px; }
+    .stat-value { font-size: 26px; font-weight: 700; color: #111827; }
+    .stat-change { font-size: 11px; color: #9ca3af; margin-top: 3px; }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .stat-icon.blue   { background: #eff6ff; }
+    .stat-icon.green  { background: #f0fdf4; }
+    .stat-icon.purple { background: #faf5ff; }
+    .stat-icon.orange { background: #fff7ed; }
+
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .sidebar { display: none; }
+      .main { padding: 24px 18px 100px; }
+      .audio-left { display: none; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
 <body>
 
-  <aside class="sidebar">
-    <div class="logo">TL;DR ✦</div>
-    <div class="tagline">because you saved it<br>but never read it.</div>
-    <nav>
-      <a class="nav-link active" href="#">Today's Digest</a>
-      <a class="nav-link" href="#">All Articles</a>
-    </nav>
-    <div class="sidebar-footer">
-      <input type="email" id="sidebar-email" placeholder="your@email.com">
-      <button id="sidebar-email-btn">Get Notified</button>
-    </div>
-  </aside>
+<div class="layout">
 
-  <main class="main">
-    <div class="header">
-      <div>
-        <h1 class="heading">Today's Digest</h1>
-        <p class="subheading" id="article-count">Loading articles...</p>
-      </div>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">TL;DR ✦</div>
+      <p class="tagline">for every article you starred and forgot.</p>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Mode</div>
       <div class="toggle-group">
         <button class="toggle active" data-mode="both">Both</button>
         <button class="toggle" data-mode="text">Text</button>
@@ -34,33 +454,149 @@
       </div>
     </div>
 
-    <div class="cards" id="cards-container">
-      <div class="empty-state" id="empty-state" style="display:none">
-        <div class="empty-icon">✦</div>
-        <p>Nothing saved yet.</p>
-        <p class="empty-sub">Install the extension and save your first article!</p>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Email Notifications</div>
+      <p class="sidebar-hint">Get notified when summaries are ready.</p>
+      <input type="email" id="sidebar-email" placeholder="your@email.com" class="sidebar-input" />
+      <button id="sidebar-email-btn" class="sidebar-btn">Get Notified</button>
+    </div>
+
+    <div class="sidebar-footer">
+      <p>Built with Browser Use · Gemini · gTTS</p>
+      <p style="margin-top:4px;opacity:0.5">DiamondHacks 2025</p>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="main-header">
+      <h1 class="main-title">Today's TL;DR</h1>
+      <p class="main-sub" id="article-count">Loading...</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Total Saved</div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-change">All time</div>
+        </div>
+        <div class="stat-icon blue">
+          <svg width="20" height="20" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Summarized</div>
+          <div class="stat-value" id="stat-summarized">—</div>
+          <div class="stat-change" id="stat-pct">—</div>
+        </div>
+        <div class="stat-icon green">
+          <svg width="20" height="20" fill="none" stroke="#16a34a" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Time Saved</div>
+          <div class="stat-value" id="stat-time">—</div>
+          <div class="stat-change">Estimated</div>
+        </div>
+        <div class="stat-icon purple">
+          <svg width="20" height="20" fill="none" stroke="#9333ea" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">With Audio</div>
+          <div class="stat-value" id="stat-audio">—</div>
+          <div class="stat-change">Ready to listen</div>
+        </div>
+        <div class="stat-icon orange">
+          <svg width="20" height="20" fill="none" stroke="#ea580c" stroke-width="2" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </div>
       </div>
     </div>
-  </main>
 
-  <!-- Audio player bar -->
-  <div class="audio-bar" id="audio-bar" style="display:none">
-    <div class="audio-info">
-      <span class="audio-title" id="audio-title">No article selected</span>
+    <div id="empty-state" class="empty-state" style="display:none">
+      <div class="empty-icon">📚</div>
+      <p class="empty-title">Nothing saved yet</p>
+      <p class="empty-sub">Use the Chrome extension to save articles and we'll summarize them for you.</p>
     </div>
-    <div class="audio-controls">
-      <button id="rewind-btn">⏪ 15s</button>
-      <button id="play-btn">▶</button>
-      <button id="forward-btn">15s ⏩</button>
-    </div>
-    <div class="audio-progress">
-      <span id="current-time">0:00</span>
-      <input type="range" id="progress-bar" value="0" min="0" max="100">
-      <span id="total-time">0:00</span>
-    </div>
+
+    <div id="cards-container" class="cards-container"></div>
+  </main>
+</div>
+
+<!-- Audio Bar -->
+<div id="audio-bar" class="audio-bar" style="display:none">
+  <audio id="audio-player"></audio>
+
+  <div class="audio-left">
+    <div class="audio-playing-dot"></div>
+    <span id="audio-title" class="audio-title">Now Playing</span>
   </div>
 
-  <audio id="audio-player"></audio>
-  <script src="app.js"></script>
+  <div class="audio-controls">
+    <button id="rewind-btn" class="audio-ctrl" title="Back 15s">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <polyline points="1 4 1 10 7 10"/>
+        <path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
+      </svg>
+      <span class="ctrl-label">15s</span>
+    </button>
+
+    <button id="play-btn" class="audio-play-btn">▶</button>
+
+    <button id="forward-btn" class="audio-ctrl" title="Forward 15s">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <polyline points="23 4 23 10 17 10"/>
+        <path d="M20.49 15a9 9 0 1 1-.49-3.5"/>
+      </svg>
+      <span class="ctrl-label">15s</span>
+    </button>
+  </div>
+
+  <div class="audio-progress">
+    <span id="current-time" class="audio-time">0:00</span>
+    <input type="range" id="progress-bar" class="progress-bar" min="0" max="100" value="0" />
+    <span id="total-time" class="audio-time">0:00</span>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  // Stats — runs independently from app.js, no changes to original JS needed
+  async function loadStats() {
+    try {
+      const res = await fetch("http://127.0.0.1:8080/digest");
+      const articles = await res.json();
+
+      const total = articles.length;
+      const summarized = articles.filter(a =>
+        a.summary && a.summary !== "Summary could not be generated."
+      ).length;
+      const withAudio = articles.filter(a => a.audio_path).length;
+      const pct = total ? Math.round((summarized / total) * 100) : 0;
+
+      // Estimate ~3 min saved per summary vs full article (~15 min avg)
+      const minSaved = summarized * 12;
+      const timeStr = minSaved >= 60
+        ? `${Math.floor(minSaved / 60)}h ${minSaved % 60}m`
+        : `${minSaved}m`;
+
+      document.getElementById("stat-total").textContent = total;
+      document.getElementById("stat-summarized").textContent = summarized;
+      document.getElementById("stat-pct").textContent = `${pct}% complete`;
+      document.getElementById("stat-time").textContent = timeStr || "0m";
+      document.getElementById("stat-audio").textContent = withAudio;
+    } catch (e) {
+      // silently fail — stats are non-critical
+    }
+  }
+
+  loadStats();
+  setInterval(loadStats, 10000);
+</script>
 </body>
 </html>
